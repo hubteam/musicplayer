@@ -17,13 +17,13 @@ public class UserServiceImpl implements UserService{
 	
 	public void add(User user) {
 		// TODO Auto-generated method stub
-		userDao.add(user);
+//		userDao.add(user);
 		
 	}
 
 	public void update(User user) {
 		// TODO Auto-generated method stub
-		userDao.update(user);
+//		userDao.update(user);
 	}
 
 }

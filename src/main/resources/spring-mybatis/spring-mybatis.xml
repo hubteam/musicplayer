@@ -13,7 +13,7 @@
        					   http://www.springframework.org/schema/tx 
        					   http://www.springframework.org/schema/tx/spring-tx.xsd">
        					   
-   <!-- 加载资源文件: 数据库连接文件 -->
+  <!-- 加载资源文件: 数据库连接文件 -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:/properties/jdbc.properties"/>
 	</bean>
@@ -28,8 +28,8 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
 		<!-- 扫描entity -->
-		<property name="typeAliasesPackage" value="com.ssmdemo.entity"/>
-		<!-- 批量注册mapper.xml -->
+		<property name="typeAliasesPackage" value="com.musicplayer.entity"/>
+		<!-- 注册mapper.xm -->
 		<property name="mapperLocations" value="classpath*:/mapper/*.xml"/>
 	</bean>
 	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
@@ -43,6 +43,6 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	<!-- 采用注解方式管理事务 -->
-	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<tx:annotation-driven transaction-manager="transactionManager"/> 
 
 </beans>

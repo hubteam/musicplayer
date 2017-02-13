@@ -3,6 +3,7 @@
 <mapper namespace="com.musicplayer.dao.UserDao">
 
     <!-- 这里的id关联的是UserDao中的方法的名称,参数的类型为对象 -->
+    
     <insert id="add" parameterType="User">
 		insert into user(userId,userName,password) values(#{userId},#{userName},#{password})
 	</insert>
@@ -12,7 +13,7 @@
 	</update>
 	
 	<!-- 这里的id关联的是UserDao中的方法的名称，因为删除的时候是根据id删除的，参数只需要是个id就可以了 -->
-	<!--  
+	<!-- 
 	<delete id="delete" parameterType="Integer">
 		delete from user where userId = #{userId}
 	</delete>
