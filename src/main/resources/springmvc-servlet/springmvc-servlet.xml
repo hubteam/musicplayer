@@ -16,15 +16,27 @@
 	<mvc:resources location="/js/" mapping="/js/**"/>
 	<mvc:resources location="/" mapping="/**"/>
 	
+	 <mvc:interceptors>  
+        <mvc:interceptor>  
+            <!-- 需拦截的地址 -->  
+                        <!-- 二级目录 -->  
+          
+            <mvc:mapping path="/srt/*" /> 
+             <!-- 需排除拦截的地址 -->  
+            <!--  <mvc:exclude-mapping path="/login.htm"/>-->  
+            <bean class="com.musicplayer.interceptor.MyInterceptor" />  
+        </mvc:interceptor>  
+    </mvc:interceptors>  
+	
 	<!-- 自动扫描的包，使Spring支持自动检测组件，如注解的Controller -->
 	<context:component-scan base-package="com.musicplayer"/>
 	
 	<!--视图解析器： 定义视图的前缀后缀 -->
-	<bean id="resourceView" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<!-- <bean id="resourceView" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
 		<property name="prefix" value="/WEB-INF/page/"/>
 		<property name="suffix" value=".jsp"/>
-	</bean>
+	</bean>  -->
 
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="1024000"/>

@@ -1,7 +1,5 @@
 package com.musicplayer.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.musicplayer.entity.User;
 
 public interface UserService {

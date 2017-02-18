@@ -207,8 +207,22 @@
        <version>2.3</version>
     </dependency>
 	
-    
-  </dependencies>
+	<!-- jersey -->
+	<dependency>
+    <groupId>com.sun.jersey</groupId>
+    <artifactId>jersey-client</artifactId>
+    <version>1.18.3</version>
+</dependency>
+	
+	<dependency>
+    <groupId>com.sun.jersey</groupId>
+    <artifactId>jersey-core</artifactId>
+    <version>1.17.1</version>
+</dependency>
+
+	
+	
+ </dependencies>
   <build>
     <finalName>MusicPlayer</finalName>
   </build>
