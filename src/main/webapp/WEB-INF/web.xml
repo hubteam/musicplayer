@@ -27,14 +27,16 @@
   	<url-pattern>/*</url-pattern>
   </filter-mapping> -->
   <!-- 记住密码过滤器 -->
- <!--  <filter>
+  <!-- 
+  <filter>
   	<filter-name>RemberPassFilter</filter-name>
   	<filter-class>com.musicplayer.web.filter.RemberPassFilter</filter-class>
   </filter>
   <filter-mapping>
   	<filter-name>RemberPassFilter</filter-name>
   	<url-pattern>/*</url-pattern>
-  </filter-mapping> -->
+  </filter-mapping> 
+   -->
   <!-- 添加spring的监听器 -->
   <listener>
   	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

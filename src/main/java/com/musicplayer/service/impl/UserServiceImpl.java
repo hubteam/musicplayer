@@ -1,5 +1,7 @@
 package com.musicplayer.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,16 +16,30 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserDao userDao;
-	
-	public void add(User user) {
+
+	public void register(User user) {
 		// TODO Auto-generated method stub
-//		userDao.add(user);
-		
+		userDao.addUser(user);
 	}
 
-	public void update(User user) {
+	public int login(User user) {
 		// TODO Auto-generated method stub
-//		userDao.update(user);
+		return userDao.selectUser(user);
+	}
+
+	public void changeRes(User user) {
+		// TODO Auto-generated method stub
+		userDao.updateUser(user);
+	}
+
+	public int checkUserName(String name) {
+		// TODO Auto-generated method stub
+		return userDao.checkUser(name);
+	}
+
+	public List<User> showOneUser(String name) {
+		// TODO Auto-generated method stub
+		return userDao.selectOneUser(name);
 	}
 
 }
