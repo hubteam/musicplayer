@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.musicplayer.entity.Message;
 import com.musicplayer.entity.User;
 import com.musicplayer.service.UserService;
+import com.musicplayer.util.MD5Util;
 import com.musicplayer.util.SendMailUtil;
 
 @Controller
@@ -62,7 +63,7 @@ public class UserController {
 		ModelAndView mv = new ModelAndView();
 		User user = new User();
 		user.setUserName(username);
-		user.setPassword(pass);
+		user.setPassword(MD5Util.md5(pass));
 		System.out.println("checkLogin");
 		System.out.println(username);
 		int flag;
@@ -87,7 +88,7 @@ public class UserController {
 		
 			User user = new User();
 			user.setMail(email);
-			user.setPassword(password);
+			user.setPassword(MD5Util.md5(password));
 			user.setUserName(userName);
 			
 			userService.register(user);	
@@ -100,7 +101,7 @@ public class UserController {
 		ModelAndView mv = new ModelAndView();
 		User user = new User();
 		user.setMail(email);
-		user.setPassword(password);
+		user.setPassword(MD5Util.md5(password));
 		user.setSex(sex);
 		user.setUserName(userName);
 		userService.changeRes(user);

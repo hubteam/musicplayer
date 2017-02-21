@@ -42,4 +42,9 @@ public class UserServiceImpl implements UserService{
 		return userDao.selectOneUser(name);
 	}
 
+	public void findUserPass(User user) {
+		// TODO Auto-generated method stub
+		userDao.updateUserPass(user);
+	}
+
 }

@@ -11,5 +11,6 @@ public interface UserService {
 	public void changeRes(User user);
 	public int checkUserName(String name);
 	public List<User> showOneUser(String name);
+	public void findUserPass(User user);
 
 }

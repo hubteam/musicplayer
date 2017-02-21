@@ -19,4 +19,6 @@ public interface UserDao {
 	int checkUser(String name);
 	
 	List<User> selectOneUser(String name);
+	
+	void updateUserPass(User user);
 }

@@ -15,6 +15,12 @@
 		where userName = #{userName}
 	</update>
 	
+	<update id="updateUserPass" parameterType="User">
+		update user 
+		set password = #{password}
+		where userName = #{userName}
+	</update>
+	
 	<select id="selectUser" parameterType="User" resultType="int">
 	select count(*) from user 
 	where userName = #{userName} and password = #{password}
