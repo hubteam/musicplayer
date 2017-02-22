@@ -208,9 +208,13 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/findPass")
-	public ModelAndView findPass(String code,String codeValue){
+	public ModelAndView findPass(String userName,String password){
 		ModelAndView mv = new ModelAndView();
-		//System.out.println("findPass"+userName);
+		User user = new User();
+		user.setPassword(password);
+		user.setUserName(userName);
+		userService.findUserPass(user);
+		mv.setViewName("/userPage/index.jsp");
 		return mv;
 	}
 	
