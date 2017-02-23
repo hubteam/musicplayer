@@ -53,7 +53,7 @@ public class UserController {
 		}
 		
 		
-		mv.setViewName("/userPage/index.jsp");
+		mv.setViewName("/song/showAll");
 		
 		return mv;
 	}
