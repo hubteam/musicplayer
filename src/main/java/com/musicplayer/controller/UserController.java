@@ -34,57 +34,71 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+//	@RequestMapping(value="/login")
+//	public ModelAndView login(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "userName") String userName,@RequestParam(value = "password") String password,String flag){ 
+//		ModelAndView mv = new ModelAndView();
+//		System.out.println("login");
+//		System.out.println("checked"+"   "+flag);
+//		
+//		HttpSession session = request.getSession();
+//		session.setAttribute("user", userName);
+//		if(flag != null || !("".equals(flag))){
+//			Cookie cookie = new Cookie("cookie_user", userName+"-"+password);				
+//			cookie.setMaxAge(60*60*24*30); //cookie 保存30天
+//			response.addCookie(cookie);
+//		}else{	
+//			Cookie cookie = new Cookie("cookie_user",userName+"-"+null);				
+//			cookie.setMaxAge(60*60*24*30); //cookie 保存30天
+//			response.addCookie(cookie);				
+//		}
+//		
+//		
+//		mv.setViewName("/song/showAll");
+//		
+//		return mv;
+//	}
+	
 	@RequestMapping(value="/login")
-	public ModelAndView login(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "userName") String userName,@RequestParam(value = "password") String password,String flag){ 
+	public ModelAndView checkLogin(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "userName") String userName,@RequestParam(value = "password") String password,String flag){ 
 		ModelAndView mv = new ModelAndView();
-		System.out.println("login");
-		System.out.println("checked"+"   "+flag);
+		User user = new User();
+		user.setUserName(userName);
+		System.out.println("username"+userName);
+		user.setPassword(MD5Util.md5(password));
+		System.out.println("checkLogin");
+		System.out.println(userName);
+		int isLogin;
 		
-		HttpSession session = request.getSession();
-		session.setAttribute("user", userName);
-		if(flag != null || !("".equals(flag))){
-			Cookie cookie = new Cookie("cookie_user", userName+"-"+password);				
-			cookie.setMaxAge(60*60*24*30); //cookie 保存30天
-			response.addCookie(cookie);
-		}else{	
-			Cookie cookie = new Cookie("cookie_user",userName+"-"+null);				
-			cookie.setMaxAge(60*60*24*30); //cookie 保存30天
-			response.addCookie(cookie);				
+		isLogin = userService.login(user);
+	//	Message mes = new Message();
+		//HttpSession session = request.getSession();
+		if(isLogin == 1){
+			//session.setAttribute("user", userName);
+			//mv.setViewName("/userPage/index.jsp");
+			HttpSession session = request.getSession();
+			session.setAttribute("user", userName);
+			if(flag != null || !("".equals(flag))){
+				Cookie cookie = new Cookie("cookie_user", userName+"-"+password);				
+				cookie.setMaxAge(60*60*24*30); //cookie 保存30天
+				response.addCookie(cookie);
+			}else{	
+				Cookie cookie = new Cookie("cookie_user",userName+"-"+null);				
+				cookie.setMaxAge(60*60*24*30); //cookie 保存30天
+				response.addCookie(cookie);				
+			}
+			
+		}else{
+			//mes.setMes("");
+			//mv.addObject("mes","用户名或密码错误");
+			System.out.println("error");
 		}
-		
-		
-		mv.setViewName("/song/showAll");
-		
+		mv.setViewName("/song/showAllList");
 		return mv;
 	}
 	
-	@RequestMapping(value="/checkLogin")
-	public @ResponseBody Message checkLogin(String username,String pass){ 
-		ModelAndView mv = new ModelAndView();
-		User user = new User();
-		user.setUserName(username);
-		user.setPassword(MD5Util.md5(pass));
-		System.out.println("checkLogin");
-		System.out.println(username);
-		int flag;
-		
-		flag = userService.login(user);
-		Message mes = new Message();
-		//HttpSession session = request.getSession();
-		if(flag == 1){
-			//session.setAttribute("user", userName);
-			//mv.setViewName("/userPage/index.jsp");
-			
-		}else{
-			mes.setMes("用户名或密码错误");
-			System.out.println("error");
-		}
-		return mes;
-	}
-	
 	@RequestMapping(value="/register")
-	public ModelAndView register(String userName,String email,String password,String confirmPassword){
-		ModelAndView mv = new ModelAndView();
+	public String register(String userName,String email,String password,String confirmPassword){
+		//ModelAndView mv = new ModelAndView();
 		
 			User user = new User();
 			user.setMail(email);
@@ -92,13 +106,13 @@ public class UserController {
 			user.setUserName(userName);
 			
 			userService.register(user);	
-			mv.setViewName("/userPage/index.jsp");
-		    return mv;		
+			//mv.setViewName("/userPage/index.jsp");
+		    return "redirect:/song/showAllList";		
 	}
 	
 	@RequestMapping(value="/changeRes")
-	public ModelAndView changeRes(HttpServletRequest request,String userName,String password,String confirmPassword,String email,String sex){
-		ModelAndView mv = new ModelAndView();
+	public String changeRes(HttpServletRequest request,String userName,String password,String confirmPassword,String email,String sex){
+		//ModelAndView mv = new ModelAndView();
 		User user = new User();
 		user.setMail(email);
 		user.setPassword(MD5Util.md5(password));
@@ -109,9 +123,9 @@ public class UserController {
 		String name = (String) session.getAttribute("user");
 		if(name != null || !("".equals(name))){
 			session.invalidate();
-			mv.setViewName("/userPage/index.jsp");
+			//mv.setViewName("/userPage/index.jsp");
 		}
-		return mv;
+		return "redirect:/song/showAlList";
 	}
 	
 	@RequestMapping(value="/checkName")
@@ -152,25 +166,25 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/logOut")
-	public ModelAndView logOut(HttpServletRequest request){
+	public String logOut(HttpServletRequest request){
 		HttpSession session = request.getSession();
 		String name = (String) session.getAttribute("user");
 		System.out.println("test");
 		System.out.println(name);
-		ModelAndView mv = new ModelAndView();
+		//ModelAndView mv = new ModelAndView();
 		if(name != null || !("".equals(name))){
 			session.invalidate();
-			mv.setViewName("/userPage/index.jsp");
+			//mv.setViewName("/song/showAll");
 		}
 
-		return mv;
+		return "redirect:/song/showAllList";
 	}
 	
 	@RequestMapping(value="/showOneUser")
-	public @ResponseBody User showOneUser(String username){
+	public @ResponseBody User showOneUser(@RequestParam(value="loginName") String loginName){
 		User user = new User();
-		System.out.println(username);
-		List<User> list = userService.showOneUser(username);
+		System.out.println(loginName);
+		List<User> list = userService.showOneUser(loginName);
 		user = list.get(0);
 		return user;
 	}
@@ -208,14 +222,14 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/findPass")
-	public ModelAndView findPass(String userName,String password){
-		ModelAndView mv = new ModelAndView();
+	public String findPass(String userName,String password){
+		//ModelAndView mv = new ModelAndView();
 		User user = new User();
 		user.setPassword(password);
 		user.setUserName(userName);
 		userService.findUserPass(user);
-		mv.setViewName("/userPage/index.jsp");
-		return mv;
+		//mv.setViewName("/userPage/index.jsp");
+		return "redirect:/song/showAllList";
 	}
 	
 	
