@@ -225,7 +225,8 @@ public class UserController {
 	public String findPass(String userName,String password){
 		//ModelAndView mv = new ModelAndView();
 		User user = new User();
-		user.setPassword(password);
+		
+		user.setPassword(MD5Util.md5(password));
 		user.setUserName(userName);
 		userService.findUserPass(user);
 		//mv.setViewName("/userPage/index.jsp");
