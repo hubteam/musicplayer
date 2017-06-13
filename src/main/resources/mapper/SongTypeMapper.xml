@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.TypeDao">
+<select id="findAllType" resultMap="typeMap">
+select * from songtype
+</select>
+<resultMap type="SongType" id="typeMap">
+<id column="songTypeId" property="songTypeId"/>
+<result column="songTypeName" property="songTypeName"/>
+</resultMap>
+<select id="findByTypeId" parameterType="int" resultMap="typeIdMap">
+select * from songtype where songTypeId=#{songTypeId}
+</select>
+<resultMap type="SongType" id="typeIdMap">
+<id column="songTypeId" property="songTypeId"/>
+<result column="songTypeName" property="songTypeName"/>
+</resultMap>
+<delete id="deleByTypeId" parameterType="int">
+delete from songType where songTypeId=#{songType}
+</delete>
+<update id="chaByTypeId" parameterType="SongType">
+update songtype
+set songTypeName=#{songTypeName}
+where songTypeId=#{songTypeId}
+</update>
+
+<insert id="insertType" parameterType="String">
+insert into songtype(songTypeName)
+value(#{songTypeName})
+
+</insert>
+</mapper>

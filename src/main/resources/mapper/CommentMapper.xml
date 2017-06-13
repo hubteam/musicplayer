@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.CommentDao">
+<select id="selectComment" resultMap="commentMap" parameterType="int">
+select *
+from song,comment
+where song.songId=comment.songId and comment.songId=#{songId}
+order by time desc
+</select>
+<resultMap id="commentMap" type="Comment">
+   <id column="commentId" property="commentId"/>
+   <result column="comment" property="comment"/>
+   <result column="time" property="time"/>
+   <result column="userName" property="userName"/>
+   <association property="song" javaType="Song">
+      <id property="songId" column="songId"/>
+      <result property="songName" column="songName"/>  
+      <result property="lyricAddr" column="lyricAddr"/>
+   </association>
+   
+</resultMap>
+
+<!-- 发表评论 -->
+<insert id="insertComment" parameterType="Comment">
+insert into comment(comment,userName,songId,time)
+value(#{comment},#{user.userName},#{song.songId},#{time})
+</insert>
+
+<delete id="deleteComment" parameterType="int">
+delete from comment
+where commentId=#{commentId}
+</delete>
+
+
+
+</mapper>

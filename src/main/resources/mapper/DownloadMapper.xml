@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.DownloadDao">
+<select id="isDownLoad" parameterType="Download" resultType="int">
+select count(*)
+from download
+where songId = #{songId} and userName = #{userName}
+</select>
+
+<insert id="insertDownLoad" parameterType="Download">
+insert into download(songId,userName,downTime)
+value(#{songId},#{userName},#{downTime})
+</insert>
+
+<update id="updTime" parameterType="Download">
+update download
+set downTime = #{downTime}
+where songId = #{songId} and userName=#{userName}
+</update>
+
+<select id="selectDown" parameterType="String" resultMap="downMap">
+select *
+from download,song,singer
+where download.songId = song.songId and singer.singerId = song.singerId and download.userName=#{userName}
+order by downTime desc
+</select>
+<resultMap type="Song" id="downMap">
+ <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <association property="singer" javaType="Singer">
+     <id property="singerId" column="singerId"/>
+     <result property="singerName" column="singerName"/>         
+  </association>
+  <association property="down" javaType="Download">
+     <id property="downloadId" column="downloadId"/>
+     <result property="userName" column="userName"/>   
+      <result property="downTime" column="downTime"/>      
+  </association>
+</resultMap>
+
+<delete id="deleteDown" parameterType="Download">
+delete from download
+where songId = #{songId} and userName=#{userName}
+</delete>
+</mapper>

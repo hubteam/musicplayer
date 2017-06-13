@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.LikeDao">
+
+<!-- 判断是否已经加入喜欢的列表 -->
+<select id="isLike" parameterType="Like" resultType="int">
+select count(*) 
+from fond 
+where songId=#{songId} and userName=#{userName}
+</select>
+
+<!-- 还未收藏则插入 -->
+<insert id="insertLike" parameterType="Like">
+insert into fond(songId,userName,likeTime)
+value(#{songId},#{userName},#{likeTime})
+</insert>
+
+<!-- 取消收藏 -->
+<delete id="deleteLike" parameterType="Like">
+delete from fond
+where songId = #{songId} and userName = #{userName}
+</delete>
+
+<!-- 查看收藏列表 -->
+<select id="selectClick" parameterType="String" resultMap="likeMap">
+select *
+from fond,song,singer
+where fond.songId = song.songId and singer.singerId = song.singerId and fond.userName=#{userName}
+order by likeTime desc
+</select>
+<resultMap type="Song" id="likeMap">
+ <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+  <association property="singer" javaType="Singer">
+     <id property="singerId" column="singerId"/>
+     <result property="singerName" column="singerName"/>         
+  </association>
+  <association property="like" javaType="like">
+     <id property="likeId" column="likeId"/>
+     <result property="userName" column="userName"/>   
+      <result property="likeTime" column="likeTime"/>      
+  </association>
+</resultMap>
+
+</mapper>

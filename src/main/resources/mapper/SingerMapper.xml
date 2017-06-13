@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.SingerDao">
+<select id="findAllSingers" resultMap="SingerMap"  >
+select * from singer limit #{startPos},#{pageSize}
+</select>
+<resultMap type="Singer" id="SingerMap">
+ <id column="singerId" property="singerId"></id>
+ <result column="singerName" property="singerName"/>
+</resultMap>
+
+
+<select id="findAllSingers1" resultMap="SingerMap1">
+select * from singer 
+</select>
+<resultMap type="Singer" id="SingerMap1">
+ <id column="singerId" property="singerId"></id>
+ <result column="singerName" property="singerName"/>
+</resultMap>
+<select id="findCount" resultType="int">
+select count(*) from singer
+</select>
+
+<delete id="delSinger" parameterType="int">
+ delete from singer where singerId=#{singerId}
+
+</delete>
+<delete id="delSong" parameterType="int">
+ delete from song where singerId=#{singerId}
+</delete>
+<!-- 
+<select id ="findbysingerId" resultType = "int" parameterType="int">
+select songId from song where singerId=#{singerId}
+</select>
+
+<delete id="delComment" parameterType="int">
+delete from comment where songId=#{songId}
+</delete>
+ -->
+
+<update id="updSinger" parameterType="Singer">
+ update singer 
+ set singerName=#{singerName},singerIntro=#{singerIntro},singerPictureAddr=#{singerPictureAddr}
+ where singerId=#{singerId}
+</update>
+
+<select id="findOneById" resultMap="singerShowOneMap" parameterType="int">
+select * from singer where singerId=#{singerId}
+</select>
+<resultMap type="Singer" id="singerShowOneMap">
+<id column="singerId" property="singerId"/>
+<result column="singerName" property="singerName"/>
+<result column="albumName" property="albumName"/>
+<result column="singerIntro" property="singerIntro"/>
+</resultMap>
+<insert id="insertSinger">
+insert into singer(singerName,singerIntro,singerPictureAddr)
+value(#{singerName},#{singerIntro},#{singerPictureAddr})
+
+</insert>
+
+<select id="findOneByName" parameterType="String" resultMap="nameMap">
+select * from singer where singerName like '%${value}%'
+</select>
+<resultMap type="Singer" id="nameMap">
+<id column="singerId" property="singerId"/>
+<result column="singerName" property="singerName"/>
+<result column="albumName" property="albumName"/>
+<result column="singerIntro" property="singerIntro"/>
+</resultMap>
+
+<!-- 根据首页上的歌手名称，查询这个歌手所有的歌曲，包括重名的歌曲 -->
+<select id="singerAllSong" resultMap="singerAllSongMap" parameterType="String" >
+  select * from singer,song
+  where singer.singerId=song.singerId and singer.singerName=#{singerName}
+</select>
+<resultMap type="SingerExt" id="singerAllSongMap">
+   <id column="singerId" property="singerId"/>
+   <result column="singerName" property="singerName"/>
+   <collection property="song" ofType="Song">
+       <id property="songId" column="songId"/>
+       <result property="songName" column="songName"/>  
+       <result property="songAddr" column="songAddr"/>
+   </collection>
+</resultMap>
+
+</mapper>

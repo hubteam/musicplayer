@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.ClickSumDao">
+
+<select id="isListen" parameterType="Click" resultType="int">
+select count(*)
+from click
+where songId = #{songId} and userName = #{userName}
+</select>
+
+<insert id="insertClick" parameterType="Click">
+insert into click(songId,userName,clickTime)
+value(#{songId},#{userName},#{clickTime})
+</insert>
+
+<update id="updCTime" parameterType="Click">
+update click
+set clickTime = #{clickTime}
+where songId = #{songId} and userName=#{userName}
+</update>
+
+<select id="selectClick" parameterType="String" resultMap="clickSumMap">
+select *
+from click,song,singer
+where click.songId = song.songId and singer.singerId = song.singerId and click.userName=#{userName}
+order by clickTime desc
+</select>
+<resultMap type="Song" id="clickSumMap">
+ <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+  <association property="singer" javaType="Singer">
+     <id property="singerId" column="singerId"/>
+     <result property="singerName" column="singerName"/> 
+     <result property="singerPictureAddr" column="singerPictureAddr"/>         
+  </association>
+  <association property="click" javaType="Click">
+     <id property="clickId" column="clickId"/>
+     <result property="userName" column="userName"/>   
+      <result property="clickTime" column="clickTime"/>      
+  </association>
+</resultMap>
+
+<delete id="deleteClick" parameterType="Click">
+delete from click
+where songId = #{songId} and userName = #{userName}
+</delete>
+
+
+
+</mapper>

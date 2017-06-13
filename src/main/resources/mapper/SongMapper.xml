@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.SongDao">
+<select id="findAll" resultMap="songMap">
+  select * from singer,song 
+  where singer.singerId=song.singerId
+</select>
+<resultMap type="Song" id="songMap">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+  <association property="singer" javaType="Singer" column="singer.singerId">
+             <id property="singerId" column="singerId"/>
+            <result property="singerName" column="singerName"/>         
+         </association>
+</resultMap>
+
+<select id="findAllByPage" resultMap="songMapByPage" >
+  select * from singer,song 
+  where singer.singerId=song.singerId
+  order by song.songTime desc
+  limit #{startPos},#{pageSize}
+</select>
+<resultMap type="Song" id="songMapByPage">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+        <association property="singer" javaType="Singer" column="singer.singerId">
+            <id property="singerId" column="singerId"/>
+            <result property="singerName" column="singerName"/>  
+            <result property="singerPictureAddr" column="singerPictureAddr"/>
+        </association>
+</resultMap>
+
+
+
+
+
+<select id="totalCount" resultType="int">
+select count(*) from singer,song 
+  where singer.singerId=song.singerId
+</select>
+
+<select id="totalByType" parameterType="Wrapper" resultType="int" >
+select count(*) 
+from singer,song,songtype 
+where singer.singerId=song.singerId and song.songTypeId=songtype.songTypeId
+  <if test="songTypeName != null"> 
+     and songtype.songTypeName=#{songTypeName}
+  </if>
+</select>
+
+<update id="updateByLyric" parameterType="Song">
+update song 
+set lyricAddr = #{lyricAddr}
+where songId = #{songId}
+</update>
+<delete id="delBySongId" parameterType="int">
+delete from song
+where songId=#{songId}
+</delete>
+<select id="findBySingerName" resultMap="songMap1" parameterType="String">
+select * from singer,song 
+  where singer.singerId=song.singerId and singer.singerName=#{singerName}
+</select>
+<resultMap type="Song" id="songMap1">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+  <association property="singer" javaType="Singer" column="singer.singerId">
+             <id property="singerId" column="singerId"/>
+            <result property="singerName" column="singerName"/>
+            <result property="albumName" column="albumName"/>
+         </association>
+</resultMap>
+
+<select id="findByName" resultMap="songMap2" parameterType="String">
+select * from singer,song 
+  where singer.singerId=song.singerId and (singer.singerName like '%${value}%' or song.songName like '%${value}%')
+</select>
+<resultMap type="Song" id="songMap2">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+  <association property="singer" javaType="Singer" column="singer.singerId">
+      <id property="singerId" column="singerId"/>
+      <result property="singerName" column="singerName"/>
+   </association>
+</resultMap>
+
+<insert id="insertSong" parameterType="Song">
+insert into song(songName,singerId,songTypeId,songTime,songAddr)
+value(#{songName},#{singerId},#{songTypeId},#{songTime},#{songAddr})
+</insert>
+
+<select id="findonlysong" resultMap="song" parameterType="int">
+  select * from song 
+  where songID=#{songID}
+</select>
+<resultMap type="Song" id="song">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+</resultMap>
+
+<!-- 查询单首歌曲的详情 -->
+<select id="findonlysongDetail" resultMap="songdetail" parameterType="int">
+  select * from song,singer 
+  where song.songID=#{songID} and singer.singerId= song.singerId
+</select>
+<resultMap type="Song" id="songdetail">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+   <association property="singer" javaType="Singer">
+       <id property="singerId" column="singerId"/>
+       <result property="singerName" column="singerName"/>  
+       <result property="singerPictureAddr" column="singerPictureAddr"/>
+      
+    </association>
+</resultMap>
+
+
+<update id="updateOnlySong" parameterType="Song">
+update song 
+set singerId=#{singerId},songName=#{songName},songTypeId=#{songTypeId},songTime=#{songTime},songAddr=#{songAddr}
+where songId = #{songId}
+</update>
+
+<!-- 下载最多和点击量最多 -->
+<select id="clickMany" resultMap="clickMapmany" >
+   select * from singer,song,data
+  where singer.singerId=song.singerId and song.songId=data.songId
+  order by data.click desc
+  limit 0,9
+</select>
+<resultMap type="SongExt" id="clickMapmany">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+    <association property="data" javaType="Data">
+       <id property="dataId" column="dataId"/>
+       <result property="songId" column="songId"/>  
+       <result property="click" column="click"/>
+    </association>
+    <collection property="singers" ofType="Singer">
+       <id property="singerId" column="singerId"/>
+       <result property="singerName" column="singerName"/>  
+       <result property="singerPictureAddr" column="singerPictureAddr"/>
+   </collection>
+</resultMap>
+
+
+<select id="downLoadMany" resultMap="downMany" >
+  select * from singer,song,data
+  where singer.singerId=song.singerId and song.songId=data.songId
+  order by data.download desc
+  limit 0,6
+</select>
+<resultMap type="SongExt" id="downMany">
+  <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+    <association property="data" javaType="Data">
+       <id property="dataId" column="dataId"/>
+       
+       <result property="download" column="download"/>
+    </association>
+    <collection property="singers" ofType="Singer">
+       <id property="singerId" column="singerId"/>
+       <result property="singerName" column="singerName"/>  
+       <result property="singerPictureAddr" column="singerPictureAddr"/>
+   </collection>
+</resultMap>
+
+<!-- 
+<select id="clickMany" resultMap="clickMapmany" >
+  select * from singer,song 
+  where singer.singerId=song.singerId
+  order by song.click desc
+  limit 0,6
+</select>
+<resultMap type="Song" id="clickMapmany">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+        <association property="singer" javaType="Singer" column="singer.singerId">
+            <id property="singerId" column="singerId"/>
+            <result property="singerName" column="singerName"/>  
+            <result property="singerPictureAddr" column="singerPictureAddr"/>
+        </association>
+</resultMap>
+
+
+<select id="downLoadMany" resultMap="downMany" >
+  select * from singer,song 
+  where singer.singerId=song.singerId
+  order by song.download desc
+  limit 0,6
+</select>
+<resultMap type="Song" id="downMany">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+        <association property="singer" javaType="Singer" column="singer.singerId">
+            <id property="singerId" column="singerId"/>
+            <result property="singerName" column="singerName"/>  
+            <result property="singerPictureAddr" column="singerPictureAddr"/>
+        </association>
+</resultMap>
+ -->
+
+<!-- 
+<select id="findByType" resultMap="typeMap" parameterType="Wrapper" >
+  select * from singer,song 
+  where singer.singerId=song.singerId and song.songType=#{song.songType}
+  limit #{page.startPos},#{page.pageSize}
+</select>
+<resultMap type="Song" id="typeMap">
+   <id column="songId" property="songId"/>
+  <result column="songName" property="songName"/>
+  <result column="songTime" property="songTime"/>
+  <result column="songAddr" property="songAddr"/>
+  <result column="songType" property="songType"/>
+        <association property="singer" javaType="Singer" column="singer.singerId">
+            <id property="singerId" column="singerId"/>
+            <result property="singerName" column="singerName"/>  
+            <result property="singerPictureAddr" column="singerPictureAddr"/>
+        </association>
+</resultMap>
+
+ -->
+
+<select id="findByType" resultMap="typeMap" parameterType="Wrapper" >
+  select * 
+  from singer,song,songtype 
+  where singer.singerId=song.singerId and song.songTypeId=songtype.songTypeId 
+    <if test="songTypeName != null">
+      and songtype.songTypeName=#{songTypeName}
+    </if>
+  limit #{page.startPos},#{page.pageSize}
+</select>
+<resultMap type="SongExt" id="typeMap">
+   <id column="songId" property="songId"/>
+   <result column="songName" property="songName"/>
+   <result column="songTime" property="songTime"/>
+   <result column="songAddr" property="songAddr"/>
+  <result column="lyricAddr" property="lyricAddr"/>
+   <association property="songtype" javaType="SongType">
+      <id column="songTypeId" property="songTypeId"/>
+      <result column="songTypeName" property="songTypeName"/>
+   </association>  
+   <collection property="singers" ofType="Singer">
+       <id property="singerId" column="singerId"/>
+       <result property="singerName" column="singerName"/>  
+       <result property="singerPictureAddr" column="singerPictureAddr"/>
+   </collection>
+</resultMap>
+
+
+
+</mapper>

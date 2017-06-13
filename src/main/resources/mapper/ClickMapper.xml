@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.musicplayer.dao.ClickDao">
+
+<select id="findAllClick" resultMap="clickMap">
+  select * from data,song 
+  where data.songId=song.songId
+  limit #{startPos},#{pageSize}
+</select>
+<resultMap type="Data" id="clickMap">
+  <id column="dataId" property="dataId"/>
+  <result column="click" property="click"/>
+  <result column="download" property="download"/>  
+    <association property="song" javaType="Song" column="song.songId">
+      <id property="songId" column="songId"/>
+      <result property="songName" column="songName"/>
+    </association> 
+</resultMap>
+
+<select id="findClicks" resultMap="clicksMap">
+  select * from data,song 
+  where data.songId=song.songId
+</select>
+<resultMap type="Data" id="clicksMap">
+  <id column="dataId" property="dataId"/>
+  <result column="click" property="click"/>
+  <result column="download" property="download"/>  
+    <association property="song" javaType="Song" column="song.songId">
+      <id property="songId" column="songId"/>
+      <result property="songName" column="songName"/>
+    </association> 
+</resultMap>
+
+<select id="allClickCount" resultType="int">
+  select count(*) 
+  from data,song 
+  where data.songId=song.songId
+</select>
+
+<!--  
+
+<select id="clickMany" resultMap="clickMapmany">
+  select singer.singerName,song.songName
+from song,singer
+  where singer.singerId=song.singerId
+  order by song.click desc
+  limit 0,6
+</select>
+<resultMap type="Song" id="clickMapmany">
+   <id column="songId" property="songId"/>
+  <result column="click" property="click"/>
+  <result column="download" property="download"/>  
+         <association property="singer" javaType="Singer" column="singer.singerId">
+           <id property="singerId" column="singerId"/>
+           <result property="singerName" column="singerName"/>
+    </association> 
+</resultMap>
+ 
+<select id="downLoadMany" resultMap="downMany">
+ select singer.singerName,song.songName
+from song,singer
+  where singer.singerId=song.singerId
+  order by song.download desc
+  limit 0,6
+</select>
+<resultMap type="Song" id="downMany">
+  <id column="songId" property="songId"/>
+  <result column="click" property="click"/>
+  <result column="download" property="download"/>  
+         <association property="singer" javaType="Singer" column="singer.singerId">
+           <id property="singerId" column="singerId"/>
+           <result property="singerName" column="singerName"/>
+    </association> 
+</resultMap>
+
+-->
+
+
+
+
+<!-- 
+<select id="clickMany" resultMap="clickMapmany">
+  select * from data,song 
+  where data.songId=song.songId
+  order by click desc
+  limit 0,6
+</select>
+<resultMap type="Data" id="clickMapmany">
+  <id column="dataId" property="dataId"/>
+  <result column="click" property="click"/>
+  <result column="download" property="download"/>  
+    <association property="song" javaType="Song" column="song.songId">
+      <id property="songId" column="songId"/>
+      <result property="songName" column="songName"/>
+    </association> 
+</resultMap>
+ 
+<select id="downLoadMany" resultMap="downMany">
+ select singer.singerName,song.songName
+from data,song,singer
+  where data.songId=song.songId and singer.singerId=song.singerId
+  order by download desc
+  limit 0,6
+</select>
+<resultMap type="Data" id="downMany">
+  <id column="dataId" property="dataId"/>
+  <result column="click" property="click"/>
+  <result column="download" property="download"/>  
+    <association property="song" javaType="Song" column="song.songId">
+      <id property="songId" column="songId"/>
+      <result property="songName" column="songName"/>
+         <association property="singer" javaType="Singer" column="singer.singerId">
+           <id property="singerId" column="singerId"/>
+           <result property="singerName" column="singerName"/>
+    </association>
+    </association> 
+</resultMap>
+  -->
+ <!-- 
+<select id="downLoadMany" resultType="Song">
+select singer.singerName,song.songName
+from data,song,singer
+where data.songId=song.songId and singer.singerId=song.singerId
+order by download desc
+limit 0,6
+</select>
+ 
+ <select id="downLoadMany" resultMap="down">
+select * from data
+order by download desc
+limit 0,6
+</select>
+
+<resultMap type="Data" id="down">
+  <id column="dataId" property="dataId"/>
+    
+     <association property="song" select="downMany" javaType="Song" column="song.songId">
+           
+    </association>
+</resultMap>
+
+<select id="downMany" resultMap="test" >
+select singer.singerName,song.songName
+from song,singer
+where singer.singerId=song.singerId
+</select>
+<resultMap type="Song" id="test">
+  <id column="songId" property="songId"/>
+  <result property="songName" column="songName"/>
+     <association property="singer" javaType="Singer" column="singer.singerId">
+           <id property="singerId" column="singerId"/>
+           <result property="singerName" column="singerName"/>
+    </association>
+</resultMap>
+ -->
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+<select id="findClickByName" resultMap="clickMap1" parameterType="String">
+select * from data,song 
+  where data.songId=song.songId and songName like '%${value}%'
+  </select>
+<resultMap type="Data" id="clickMap1">
+   <id column="dataId" property="dataId"/>
+  <result column="click" property="click"/>
+  <result column="download" property="download"/>
+  <association property="song" javaType="Song" column="song.songId">
+      <id property="songId" column="songId"/>
+       <result property="songName" column="songName"/>
+     </association>
+
+</resultMap>
+
+
+<select id="clickFlag" resultType="int" parameterType="int">
+select count(*)
+from data
+where songId = #{songId}
+</select>
+<update id="updDownload" parameterType="int">
+update data 
+set download=download+1
+where songId=#{songId}
+</update>
+<update id="updClick" parameterType="int">
+update data 
+set click=click+1
+where songId=#{songId}
+</update>
+<insert id="insertData" parameterType="Data">
+insert into data(songId,click,download)
+value(#{songId},#{click},#{download})
+</insert>
+
+
+</mapper>
