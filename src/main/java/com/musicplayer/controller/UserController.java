@@ -68,7 +68,7 @@ public class UserController {
 		System.out.println("checkLogin");
 		System.out.println(userName);
 		int isLogin;
-		
+		System.out.println("c此时的flag是多少"+flag);
 		isLogin = userService.login(user);
 	//	Message mes = new Message();
 		//HttpSession session = request.getSession();
@@ -78,9 +78,12 @@ public class UserController {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", userName);
 			if(flag != null || !("".equals(flag))){
+				System.out.println("test see seeeeeeeee");
 				Cookie cookie = new Cookie("cookie_user", userName+"-"+password);				
 				cookie.setMaxAge(60*60*24*30); //cookie 保存30天
 				response.addCookie(cookie);
+			
+	
 			}else{	
 				Cookie cookie = new Cookie("cookie_user",userName+"-"+null);				
 				cookie.setMaxAge(60*60*24*30); //cookie 保存30天
@@ -113,6 +116,7 @@ public class UserController {
 	@RequestMapping(value="/changeRes")
 	public String changeRes(HttpServletRequest request,String userName,String password,String confirmPassword,String email,String sex){
 		//ModelAndView mv = new ModelAndView();
+		System.out.println("开始修改资料");
 		User user = new User();
 		user.setMail(email);
 		user.setPassword(MD5Util.md5(password));
@@ -125,7 +129,7 @@ public class UserController {
 			session.invalidate();
 			//mv.setViewName("/userPage/index.jsp");
 		}
-		return "redirect:/song/showAlList";
+		return "redirect:/song/showAllList";
 	}
 	
 	@RequestMapping(value="/checkName")
